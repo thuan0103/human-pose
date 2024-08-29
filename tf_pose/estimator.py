@@ -6,12 +6,13 @@ import slidingwindow as sw
 import cv2
 import numpy as np
 import tensorflow as tf
+tf.compat.v1.disable_eager_execution()
 import time
 
 from tf_pose import common
 from tf_pose.common import CocoPart
 from tf_pose.tensblur.smoother import Smoother
-from tensorflow.python.compiler.tensorrt import trt_convert as trt
+#from tensorflow.python.compiler.tensorrt import trt_convert as trt
 
 try:
     from tf_pose.pafprocess import pafprocess

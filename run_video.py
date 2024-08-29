@@ -32,7 +32,7 @@ if __name__ == '__main__':
     logger.debug('initialization %s : %s' % (args.model, get_graph_path(args.model)))
     w, h = model_wh(args.resolution)
     e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
-    cap = cv2.VideoCapture(args.video)
+    cap = cv2.VideoCapture("test.mp4")
 
     if cap.isOpened() is False:
         print("Error opening video stream or file")
