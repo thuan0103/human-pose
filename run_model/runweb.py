@@ -4,6 +4,8 @@ import time
 from flask import Flask, Response
 import cv2
 import numpy as np
+import sys
+sys.path.append('.')
 from tensorflow.keras.models import load_model
 from tf_pose.estimator import TfPoseEstimator
 from tf_pose.networks import get_graph_path, model_wh
@@ -54,7 +56,7 @@ def generate_frames():
 
     action_model = load_model('action.h5')
     actions = np.array(['quay sang trái','ngồi im','quay sang phải'])
-    sequence_length = 40
+    sequence_length = 50
     keypoints_sequence = []
 
     while True:
@@ -112,7 +114,7 @@ def generate_frames():
 
     cam.release()
 
-@app.route('/video_feed')
+@app.route('/video_feed/A7.06')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 

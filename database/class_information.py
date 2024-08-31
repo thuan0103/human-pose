@@ -50,8 +50,42 @@ class Class_Information:
         self.disconnect()
         return(text)
     
+    def class_room(self):
+        self.connect()
+        self.cursor.execute("SELECT room_name FROM class_information")
+        class_name = self.cursor.fetchall()
+        dict = []
+        for name in class_name:
+            text = {"class_name": name[0]}
+            dict.append(text)
+        self.disconnect
+        return dict
+
+    def insert_information(self, class_name, teacher, room_name):
+        self.connect()
+
+        # Kiểm tra xem dữ liệu đã tồn tại chưa
+        self.cursor.execute("""
+            SELECT COUNT(*) FROM class_information
+            WHERE class_name = ? AND teacher = ? AND room_name = ?
+        """, (class_name, teacher, room_name))
+
+        if self.cursor.fetchone()[0] == 0:
+            # Chèn dữ liệu nếu chưa tồn tại
+            self.cursor.execute("""
+                INSERT INTO class_information (class_name, teacher, room_name)
+                VALUES (?, ?, ?)
+            """, (class_name, teacher, room_name))
+            self.connection.commit()
+            print("Data inserted successfully")
+        else:
+            print("Data already exists")
+
+        self.disconnect()
 if __name__ == "__main__":
     a = Class_Information()
     b = a.check_information(teacher="Trần Minh Chính")
-    print(b)
+    c = a.class_name()
+    d = a.insert_information('DHIOT18C','Đinh Tiến Thuần','D7.04')
+    print(c)
 

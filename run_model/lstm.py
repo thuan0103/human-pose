@@ -18,7 +18,7 @@ label_map = {label: num for num, label in enumerate(actions)}
 
 # Số lượng sequences và độ dài mỗi sequence
 no_sequences = 3
-sequence_length = 40
+sequence_length = 50
 
 # Hàm để đọc dữ liệu từ các file .npy
 def load_data():
@@ -83,7 +83,7 @@ model_checkpoint = ModelCheckpoint('best_model.h5', monitor='val_loss', save_bes
 
 # Huấn luyện mô hình với các callback
 history = model.fit(x_train, y_train, epochs=200, validation_data=(x_test, y_test), 
-                    batch_size=32, callbacks=[early_stopping, model_checkpoint])
+                    batch_size=32)
 
 # Dự đoán và đánh giá mô hình
 # Đánh giá mô hình
@@ -91,3 +91,32 @@ y_pred = np.argmax(model.predict(x_test), axis=1)
 y_true = np.argmax(y_test, axis=1)
 print(f"Accuracy: {accuracy_score(y_true, y_pred)}")
 model.save("action.h5")
+
+import matplotlib.pyplot as plt
+
+# Lấy dữ liệu từ lịch sử huấn luyện
+history_dict = history.history
+epochs = range(1, len(history_dict['accuracy']) + 1)
+
+# Vẽ biểu đồ mất mát
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+plt.plot(epochs, history_dict['loss'], 'b', label='Training loss')
+plt.plot(epochs, history_dict['val_loss'], 'r', label='Validation loss')
+plt.title('Training and Validation Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+
+# Vẽ biểu đồ độ chính xác
+plt.subplot(1, 2, 2)
+plt.plot(epochs, history_dict['accuracy'], 'b', label='Training accuracy')
+plt.plot(epochs, history_dict['val_accuracy'], 'r', label='Validation accuracy')
+plt.title('Training and Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+
+# Hiển thị biểu đồ
+plt.tight_layout()
+plt.show()

@@ -4,7 +4,7 @@ conn = sqlite3.connect("database/QLSV.db")
 
 c = conn.cursor()
 
-c.execute("DROP TABLE class_information")
+c.execute("DROP TABLE camera")
 
 conn.commit()
 conn.close()

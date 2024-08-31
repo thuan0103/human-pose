@@ -4,7 +4,8 @@ import time
 import os
 import cv2
 import numpy as np
-
+import sys
+sys.path.append('.')
 from tf_pose.estimator import TfPoseEstimator
 from tf_pose.networks import get_graph_path, model_wh
 
@@ -51,7 +52,7 @@ if __name__ == '__main__':
 
     actions = np.array(['quay sang trái','ngồi im','quay sang phải'])
     no_sequences = 3
-    sequence_length = 40
+    sequence_length = 50
 
     for action in actions:
         for sequence in range(no_sequences):
@@ -80,7 +81,6 @@ if __name__ == '__main__':
 
                 logger.debug('show+')
                 no_pepole = len(humans)
-                print(no_pepole)
                 cv2.putText(image,
                             "FPS: %f" % (1.0 / (time.time() - fps_time)),
                             (10, 10),  cv2.FONT_HERSHEY_SIMPLEX, 0.5,

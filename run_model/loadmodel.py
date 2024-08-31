@@ -4,6 +4,8 @@ import time
 
 import cv2
 import numpy as np
+import sys
+sys.path.append('.')
 from tensorflow.keras.models import load_model
 from tf_pose.estimator import TfPoseEstimator
 from tf_pose.networks import get_graph_path, model_wh
@@ -53,7 +55,7 @@ if __name__ == '__main__':
 
     action_model = load_model('action.h5')
     actions = np.array(['quay sang trái', 'ngồi im','quay sang phải'])
-    sequence_length = 40
+    sequence_length = 50
     keypoints_sequence = []
 
 while True:

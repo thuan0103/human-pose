@@ -1,12 +1,12 @@
-from typing import Final
+#from typing import Final
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, filters, MessageHandler
 import sys
 sys.path.append('.')
 from database import class_information
 
-token: Final = '7160275331:AAGCdfWMeNOhlMPLOY0lrIrLNcRBILM0qLQ'
-BOT_USERNAME: Final = '@Chatbotstuden_bot'
+token = '7160275331:AAGCdfWMeNOhlMPLOY0lrIrLNcRBILM0qLQ'
+BOT_USERNAME = '@Chatbotstuden_bot'
 
 chat = {}
 

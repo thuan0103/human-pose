@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        .container {
+        display: grid;
+        grid-template-columns: 1fr 4fr 1fr; 
+        gap: 20px;
+        width: 100%;
+        max-width: 1800px; /* Tăng kích thước tối đa */
+        padding: 20px;
+        box-sizing: border-box;
+    }
+        .section {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .notification-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .add-class-form {
+            /* display: flex; */
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .video-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-section h1 {
+            margin-bottom: 20px;
+        }
+        #camera-feed {
+            border: 2px solid #333;
+            width: 100%;
+            height: 700px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            object-fit: cover;
+        }
+        select, button, input {
+            padding: 10px;
+            font-size: 1rem;
+            margin-top: 10px;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin-top: 10px;
+        }
+        .form-group label {
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 90%;
+        }
+        .notification-list p {
+            margin: 5px 0;
+        }
+    </style>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Notification Section -->
+        <div class="section notification-section">
+            <h2>Quản lý sinh viên</h2>
+            <div class="notification-list" id="notification-list">
+                <!-- Notifications will be injected here -->
+            </div>
+        </div>
+
+        <!-- Video section -->
+        <div class="section video-section">
+            <h1>Video Stream</h1>
+            <!-- Form to select the class and start the video stream -->
+            <form id="class-form">
+                <select id="class-select" name="class">
+                    <option value="">Chọn phòng học</option>
+                </select>
+                <button type="button" onclick="startVideo()">Start Video</button>
+            </form>
+
+            <!-- Placeholder for video feed -->
+            <img id="camera-feed" src="" alt="Camera Feed">
+        </div>
+
+        <!-- Form to add a new class -->
+        <div class="section add-class-form">
+            <h2>Thêm lớp</h2>
+            <div class="form-group">
+                <label for="new-class">Tên lớp:</label>
+                <input type="text" id="new-class" placeholder="Enter new class name">
+            </div>
+            <div class="form-group">
+                <label for="new-instructor">giảng viên:</label>
+                <input type="text" id="new-instructor" placeholder="Enter instructor name">
+            </div>
+            <div class="form-group">
+                <label for="new-room">phòng học:</label>
+                <input type="text" id="new-room" placeholder="Enter room number">
+            </div>
+            <button type="button" onclick="addClass()">Thêm lớp</button>
+        </div>
+    </div>
+
+    <script>
+        // Fetch class list from the API and populate the dropdown
+        fetch('/api/classes')
+            .then(response => response.json())
+            .then(data => {
+                const classSelect = document.getElementById('class-select');
+                data.forEach(classItem => {
+                    const option = document.createElement('option');
+                    option.value = classItem.class_name;
+                    option.textContent = classItem.class_name;
+                    classSelect.appendChild(option);
+                });
+            });
+
+        // Fetch and display not focused students
+        function updateNotifications() {
+            fetch('/api/not_focused_students')
+                .then(response => response.json())
+                .then(data => {
+                    const notificationList = document.getElementById('notification-list');
+                    notificationList.innerHTML = ''; // Clear previous notifications
+                    data.forEach(student => {
+                        const p = document.createElement('p');
+                        p.textContent = `Student: ${student.name} - Class: ${student.class_name}`;
+                        notificationList.appendChild(p);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching notifications:', error);
+                });
+        }
+
+        function startVideo() {
+            const classSelect = document.getElementById('class-select');
+            const selectedClass = classSelect.value;
+
+            if (selectedClass) {
+                const videoFeed = document.getElementById('camera-feed');
+                const randomQuery = `?t=${new Date().getTime()}`; // Prevent caching
+                const videoURL = `http://127.0.0.1:5000/video_feed/${selectedClass}${randomQuery}`;
+                console.log("Loading video from:", videoURL);
+                
+                // Đặt lại nguồn video và ẩn hiện nó
+                videoFeed.src = videoURL;
+                videoFeed.style.display = 'block';
+                videoFeed.onload = () => {
+                    // Chắc chắn video đã được tải lại
+                    console.log("Video loaded successfully");
+                };
+                
+                // Cập nhật thông báo mỗi 10 giây
+                setInterval(updateNotifications, 10000);
+            } else {
+                alert('Please select a class to proceed.');
+            }
+        }
+
+
+        function addClass() {
+            const newClassName = document.getElementById('new-class').value.trim();
+            const newInstructor = document.getElementById('new-instructor').value.trim();
+            const newRoom = document.getElementById('new-room').value.trim();
+
+            if (newClassName && newInstructor && newRoom) {
+                fetch('http://127.0.0.1:5000/api/add_class', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        class_name: newClassName,
+                        instructor: newInstructor,
+                        room: newRoom
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        // Clear input fields and refresh the class list
+                        document.getElementById('new-class').value = '';
+                        document.getElementById('new-instructor').value = '';
+                        document.getElementById('new-room').value = '';
+                        alert('Class added successfully!');
+                        updateClassList();
+                    } else {
+                        alert('Failed to add class.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while adding the class.');
+                });
+            } else {
+                alert('Please fill out all fields.');
+            }
+        }
+
+        function updateClassList() {
+            fetch('/api/classes')
+                .then(response => response.json())
+                .then(data => {
+                    const classSelect = document.getElementById('class-select');
+                    classSelect.innerHTML = '<option value="">Select Class</option>'; // Reset options
+                    data.forEach(classItem => {
+                        const option = document.createElement('option');
+                        option.value = classItem.class_name;
+                        option.textContent = classItem.class_name;
+                        classSelect.appendChild(option);
+                    });
+                });
+        }
+    </script>
+</body>
+</html>
