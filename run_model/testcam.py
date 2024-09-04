@@ -1,7 +1,7 @@
 import cv2
 from flask import Flask, Response
 app = Flask(__name__)
-url = 'rtsp://admin:vietson150@192.168.0.107:554/cam/realmonitor?channel=1&subtype=0'
+url = 'rtsp://admin:thuandinh0123@192.168.88.114:554/cam/realmonitor?channel=1&subtype=0'
 cap = cv2.VideoCapture(url)
 def generate_frames():
     while True:

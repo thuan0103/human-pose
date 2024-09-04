@@ -52,7 +52,7 @@
         #camera-feed {
             border: 2px solid #333;
             width: 100%;
-            height: 700px;
+            height: 670px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
@@ -175,8 +175,10 @@
                 const videoURL = `http://127.0.0.1:5000/video_feed/${selectedClass}${randomQuery}`;
                 console.log("Loading video from:", videoURL);
                 
-                // Đặt lại nguồn video và ẩn hiện nó
+                // Hủy stream cũ bằng cách đặt src về rỗng
+                videoFeed.src = '';
                 videoFeed.src = videoURL;
+
                 videoFeed.style.display = 'block';
                 videoFeed.onload = () => {
                     // Chắc chắn video đã được tải lại
@@ -189,7 +191,6 @@
                 alert('Please select a class to proceed.');
             }
         }
-
 
         function addClass() {
             const newClassName = document.getElementById('new-class').value.trim();
