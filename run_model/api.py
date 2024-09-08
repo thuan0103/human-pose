@@ -22,7 +22,7 @@ def search():
 @app.route("/video_feed/<class_name>")
 def video_feed(class_name):
     def generate():
-        video_feed_url = f'http://192.168.88.100:5000/video_feed/{class_name}'
+        video_feed_url = f'http://192.168.88.225:5000/video_feed/{class_name}'
         try:
             r = requests.get(video_feed_url, stream=True)
             if r.status_code == 200:

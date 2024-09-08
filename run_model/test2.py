@@ -5,7 +5,7 @@ from flask import Flask, Response
 app = Flask(__name__)
 
 # URL của camera
-url = 'rtsp://admin:thuandinh0123@192.168.88.114:554/cam/realmonitor?channel=1&subtype=0'
+url = 'rtsp://admin:thuandinh0123@192.168.88.115:554/cam/realmonitor?channel=1&subtype=0'
 cap = cv2.VideoCapture(url)
 
 # Khởi tạo HOG descriptor với bộ phát hiện người tích hợp
